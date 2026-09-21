@@ -1,12 +1,12 @@
 fn main() {
     // Compile the C++ library using CMake
     let dst = cmake::Config::new(".")
-        .build_target("controlplane_cpp")
+        .build_target("sentinelgate_cpp")
         .build();
 
     // Link the compiled C++ static library
     println!("cargo:rustc-link-search=native={}/build", dst.display());
-    println!("cargo:rustc-link-lib=static=controlplane_cpp");
+    println!("cargo:rustc-link-lib=static=sentinelgate_cpp");
 
     // Link C++ standard library and system dependencies
     #[cfg(target_os = "macos")]

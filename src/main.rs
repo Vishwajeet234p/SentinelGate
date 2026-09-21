@@ -1,4 +1,4 @@
-//! ControlPlane.ai Gateway Entry Point
+//! SentinelGate Gateway Entry Point
 //!
 //! # Responsibilities
 //! Initialises the Tokio multi-threaded runtime, sets up structured JSON logging (`tracing`), loads runtime configuration,
@@ -10,12 +10,12 @@
 //! - CPU-intensive FFI ML pre-flight requests execute on dedicated `tokio::task::spawn_blocking` worker pools
 //!   to guarantee sub-5ms network latency under concurrent spikes.
 
-use controlplane_ai::{api, config::Config, engine::OnnxPreflightEngine, telemetry::ClickHouseWorker, Result};
+use sentinelgate::{api, config::Config, engine::OnnxPreflightEngine, telemetry::ClickHouseWorker, Result};
 use std::net::SocketAddr;
 use std::sync::Arc;
 use tracing::{info, error};
 
-use controlplane_ai::AppState;
+use sentinelgate::AppState;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -26,7 +26,7 @@ async fn main() -> Result<()> {
         .init();
 
     for (k, v) in std::env::vars() {
-        if k.starts_with("CP_") {
+        if k.starts_with("SG_") {
             info!("ENV VAR: {} = {}", k, v);
         }
     }
@@ -34,10 +34,10 @@ async fn main() -> Result<()> {
     // Load .env file if present
     dotenvy::dotenv().ok();
 
-    info!("Initializing ControlPlane.ai High-Throughput AI Proxy Gateway...");
+    info!("Initializing SentinelGate High-Throughput AI Proxy Gateway...");
 
     // 2. Load runtime configuration from environment variables and config files
-    let config = Config::load().expect("Failed to load ControlPlane.ai configuration settings");
+    let config = Config::load().expect("Failed to load SentinelGate configuration settings");
     info!(server_port = config.server.port, "Configuration loaded successfully");
 
     // Create pooled HTTP client
@@ -71,14 +71,14 @@ async fn main() -> Result<()> {
 
     // 6. Bind TCP Listener and launch async HTTP server
     let addr = SocketAddr::from(([0, 0, 0, 0], config.server.port));
-    info!("ControlPlane.ai Gateway listening on http://{}", addr);
+    info!("SentinelGate Gateway listening on http://{}", addr);
 
     let listener = tokio::net::TcpListener::bind(addr).await?;
     axum::serve(listener, app)
         .with_graceful_shutdown(shutdown_signal())
         .await?;
 
-    info!("ControlPlane.ai Gateway shut down gracefully.");
+    info!("SentinelGate Gateway shut down gracefully.");
     Ok(())
 }
 

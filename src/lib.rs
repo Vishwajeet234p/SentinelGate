@@ -1,7 +1,7 @@
-//! ControlPlane.ai Core Library
+//! SentinelGate Core Library
 //!
 //! # Responsibilities
-//! `controlplane-ai` is a high-throughput, sub-5ms latency AI Proxy Firewall & Governance Gateway.
+//! `sentinelgate` is a high-throughput, sub-5ms latency AI Proxy Firewall & Governance Gateway.
 //! This module serves as the library root, exposing the internal module components:
 //! - [`api`]: Axum HTTP router, handlers for `/v1/chat/completions`, rate-limiting, and SSE stream proxying.
 //! - [`engine`]: ML FFI bridge (`ort` / C++ ONNX Runtime), zero-copy prompt classifier, GGUF validator, semantic DAG router, and non-blocking circuit breaker.
@@ -20,7 +20,7 @@ pub mod error;
 pub mod telemetry;
 
 pub use config::Config;
-pub use error::{ControlPlaneError, Result};
+pub use error::{SentinelGateError, Result};
 
 /// Global Application Shared State shared across Axum request handler threads.
 pub struct AppState {

@@ -4,7 +4,7 @@
 //! Binds the Rust proxy gateway to native C++ ONNX Runtime execution. Performs sub-5ms
 //! prompt injection, PII leak detection, and intent classification without memory duplication.
 
-use crate::error::{ControlPlaneError, Result};
+use crate::error::{SentinelGateError, Result};
 use std::ffi::{c_void, CString};
 use std::os::raw::c_char;
 use std::path::Path;
@@ -52,21 +52,21 @@ impl OnnxPreflightEngine {
     pub fn new(model_path: &str) -> Result<Self> {
         let path = Path::new(model_path);
         if !path.exists() {
-            return Err(ControlPlaneError::InternalError(format!(
+            return Err(SentinelGateError::InternalError(format!(
                 "ONNX model file not found at path: {}",
                 model_path
             )));
         }
 
         let tokenizer = Tokenizer::from_file("models/tokenizer.json")
-            .map_err(|e| ControlPlaneError::InternalError(format!("Failed to load tokenizer: {}", e)))?;
+            .map_err(|e| SentinelGateError::InternalError(format!("Failed to load tokenizer: {}", e)))?;
 
         let c_path = CString::new(model_path)
-            .map_err(|e| ControlPlaneError::InternalError(e.to_string()))?;
+            .map_err(|e| SentinelGateError::InternalError(e.to_string()))?;
 
         let handle = unsafe { create_onnx_classifier(c_path.as_ptr()) };
         if handle.is_null() {
-            return Err(ControlPlaneError::MlModelExecutionError(
+            return Err(SentinelGateError::MlModelExecutionError(
                 "Failed to construct native C++ ONNXClassifier session pointer".to_string(),
             ));
         }
@@ -77,7 +77,7 @@ impl OnnxPreflightEngine {
     /// Performs zero-copy classification on input prompt string.
     pub fn classify_prompt(&self, text: &str) -> Result<ClassificationResult> {
         let encoding = self.tokenizer.encode(text, true)
-            .map_err(|e| ControlPlaneError::InternalError(format!("Tokenizer error: {}", e)))?;
+            .map_err(|e| SentinelGateError::InternalError(format!("Tokenizer error: {}", e)))?;
             
         let input_ids: Vec<i64> = encoding.get_ids().iter().map(|&x| x as i64).collect();
         let length = input_ids.len();

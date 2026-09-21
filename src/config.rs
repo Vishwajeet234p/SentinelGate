@@ -50,7 +50,7 @@ pub struct ClickHouseConfig {
 }
 
 impl Config {
-    /// Loads application settings from `config/default.yaml` overridden by environment variables prefixed with `CP_`.
+    /// Loads application settings from `config/default.yaml` overridden by environment variables prefixed with `SG_`.
     pub fn load() -> Result<Self, config::ConfigError> {
         let builder = config::Config::builder()
             .set_default("server.host", "0.0.0.0")?

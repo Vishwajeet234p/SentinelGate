@@ -6,7 +6,7 @@
 
 use crate::{
     engine::slm_validator::SlmValidatorEngine,
-    error::{ControlPlaneError, Result},
+    error::{SentinelGateError, Result},
     AppState,
     telemetry::clickhouse::AuditLogEntry,
 };
@@ -96,7 +96,7 @@ impl StreamingCircuitBreaker {
                                     }).await;
 
                                     // Yield termination event and close stream
-                                    yield Event::default().data("[STREAM_SEVERED_BY_CONTROLPLANE_POLICY]");
+                                    yield Event::default().data("[STREAM_SEVERED_BY_SENTINELGATE_POLICY]");
                                     return;
                                 }
                             }

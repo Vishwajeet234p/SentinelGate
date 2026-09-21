@@ -13,8 +13,8 @@ pub struct UpstreamConfig {
 }
 
 fn main() {
-    std::env::set_var("CP_UPSTREAM__DEFAULT_TARGET_URL", "https://generativelanguage.googleapis.com/v1beta/openai/");
-    std::env::set_var("CP_UPSTREAM__API_KEY", "AQ.Ab8RN6LFPvMxFKQKWwplObGaovODRH_wDNlYCEddmn5nt4CX5Q");
+    std::env::set_var("SG_UPSTREAM__DEFAULT_TARGET_URL", "https://generativelanguage.googleapis.com/v1beta/openai/");
+    std::env::set_var("SG_UPSTREAM__API_KEY", "AQ.Ab8RN6LFPvMxFKQKWwplObGaovODRH_wDNlYCEddmn5nt4CX5Q");
 
     let builder = config::Config::builder()
         .set_default("upstream.default_target_url", "https://generativelanguage.googleapis.com/v1beta/openai/").unwrap()

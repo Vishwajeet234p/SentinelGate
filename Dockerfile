@@ -1,4 +1,4 @@
-# Multi-Stage Dockerfile for ControlPlane.ai Gateway (Rust + C++ ONNX/llama.cpp)
+# Multi-Stage Dockerfile for SentinelGate Gateway (Rust + C++ ONNX/llama.cpp)
 #
 # STAGE 1: C++ Native Dependencies & ONNX Runtime Libraries
 FROM debian:bookworm-slim AS native-builder
@@ -49,13 +49,13 @@ COPY --from=native-builder /usr/local/lib/libonnxruntime* /usr/local/lib/
 RUN ldconfig
 
 WORKDIR /app
-COPY --from=rust-builder /app/target/release/controlplane-ai /app/controlplane-ai
+COPY --from=rust-builder /app/target/release/sentinelgate /app/sentinelgate
 COPY --from=rust-builder /app/target/release/test_postflight /app/test_postflight
 COPY models/ /app/models/
 
 EXPOSE 8080 9090
 
 ENV RUST_LOG=info
-ENV CP_SERVER__PORT=8080
+ENV SG_SERVER__PORT=8080
 
-ENTRYPOINT ["/app/controlplane-ai"]
+ENTRYPOINT ["/app/sentinelgate"]

@@ -115,7 +115,7 @@ def worker(case):
                 client = sseclient.SSEClient(resp)
                 severed = False
                 for event in client.events():
-                    if "[STREAM_SEVERED_BY_CONTROLPLANE_POLICY]" in event.data:
+                    if "[STREAM_SEVERED_BY_SENTINELGATE_POLICY]" in event.data:
                         severed = True
                         break
                 if severed:
@@ -206,7 +206,7 @@ def run_test_suite(test_name, num_requests, concurrency, distribution=None):
     print("="*80)
 
 if __name__ == "__main__":
-    print("Starting Comprehensive ControlPlane.ai Evaluation Suites...")
+    print("Starting Comprehensive SentinelGate Evaluation Suites...")
     
     # 1. Latency Stress Test (Sequential, Low Concurrency to measure baseline pure network latency)
     run_test_suite("LATENCY STRESS TEST (Low Concurrency Baseline)", num_requests=50, concurrency=1, distribution=[0.5, 0.5, 0.0, 0.0])

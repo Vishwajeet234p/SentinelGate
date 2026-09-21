@@ -1,7 +1,7 @@
-version: '3.8'
+version: "3.8"
 
 services:
-  controlplane-proxy:
+  sentinelgate-proxy:
     build:
       context: .
       dockerfile: Dockerfile
@@ -12,11 +12,11 @@ services:
       - .env
     environment:
       - RUST_LOG=info
-      - CP_SERVER__PORT=8080
-      - CP_CLICKHOUSE__URL=http://clickhouse:8123
-      - CP_UPSTREAM__API_KEY=${CP_UPSTREAM__API_KEY}
-      - CP_ML_ENGINE__ONNX_MODEL_PATH=/app/models/deberta_injection.onnx
-      - CP_ML_ENGINE__SLM_GGUF_PATH=/app/models/llama_validator.gguf
+      - SG_SERVER__PORT=8080
+      - SG_CLICKHOUSE__URL=http://clickhouse:8123
+      - SG_UPSTREAM__API_KEY=${SG_UPSTREAM__API_KEY}
+      - SG_ML_ENGINE__ONNX_MODEL_PATH=/app/models/deberta_injection.onnx
+      - SG_ML_ENGINE__SLM_GGUF_PATH=/app/models/llama_validator.gguf
     depends_on:
       clickhouse:
         condition: service_healthy

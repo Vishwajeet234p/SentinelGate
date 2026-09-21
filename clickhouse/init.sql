@@ -1,5 +1,5 @@
 -- clickhouse/init.sql
--- High-Speed Columnar Telemetry & Audit Trail Schema for ControlPlane.ai Gateway
+-- High-Speed Columnar Telemetry & Audit Trail Schema for SentinelGate Gateway
 --
 -- DESIGN PATTERNS:
 -- - Uses `MergeTree` engine partitioned by month (`toYYYYMM(timestamp)`).

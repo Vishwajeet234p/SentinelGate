@@ -1,8 +1,8 @@
-# CMakeLists.txt - Build script for C++ Native ML Engine of ControlPlane.ai
+# CMakeLists.txt - Build script for C++ Native ML Engine of SentinelGate
 #
 # RESPONSIBILITY:
 # Configures native compilation for ONNX Runtime C++ execution provider bindings
-# and llama.cpp GGUF SLM validation engine. Generates native static library `libcontrolplane_cpp.a`
+# and llama.cpp GGUF SLM validation engine. Generates native static library `libsentinelgate_cpp.a`
 # linked into Rust binary via FFI.
 #
 # LATENCY & HARDWARE OPTIMIZATIONS:
@@ -10,7 +10,7 @@
 # OpenMP thread pooling for ONNX execution, and optional CUDA backend target generation.
 
 cmake_minimum_required(VERSION 3.18)
-project(controlplane_cpp LANGUAGES CXX C)
+project(sentinelgate_cpp LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -47,14 +47,14 @@ set(CPP_SOURCES
 find_package(Threads REQUIRED)
 
 # Build Native Static Library for Rust FFI Linking
-add_library(controlplane_cpp STATIC ${CPP_SOURCES})
+add_library(sentinelgate_cpp STATIC ${CPP_SOURCES})
 
-target_include_directories(controlplane_cpp PUBLIC
+target_include_directories(sentinelgate_cpp PUBLIC
     cpp/include
     ${ONNXRUNTIME_INCLUDE_DIRS}
 )
 
-target_link_libraries(controlplane_cpp PRIVATE
+target_link_libraries(sentinelgate_cpp PRIVATE
     ${ONNXRUNTIME_LIBRARIES}
     Threads::Threads
 )

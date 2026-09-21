@@ -5,7 +5,7 @@
 
 use crate::{
     engine::{circuit_breaker::StreamingCircuitBreaker, router::SemanticTaskRouter},
-    error::{ControlPlaneError, Result},
+    error::{SentinelGateError, Result},
     AppState,
     telemetry::clickhouse::AuditLogEntry,
 };
@@ -54,7 +54,7 @@ pub async fn chat_completions_handler(
         classifier.classify_prompt(&text_to_classify)
     })
     .await
-    .map_err(|e| ControlPlaneError::InternalError(e.to_string()))??;
+    .map_err(|e| SentinelGateError::InternalError(e.to_string()))??;
 
     let preflight_latency = start_time.elapsed().as_secs_f64() * 1000.0;
 
@@ -79,7 +79,7 @@ pub async fn chat_completions_handler(
             action_taken: "BLOCKED".to_string(),
         }).await;
 
-        return Err(ControlPlaneError::SecurityPolicyViolation {
+        return Err(SentinelGateError::SecurityPolicyViolation {
             reason: preflight_result.category,
             score: preflight_result.risk_score,
         });
@@ -102,7 +102,7 @@ pub async fn chat_completions_handler(
         format!("{}/chat/completions", state.config.upstream.default_target_url)
     };
 
-    let api_key = std::env::var("CP_UPSTREAM__API_KEY").unwrap_or_else(|_| state.config.upstream.api_key.clone());
+    let api_key = std::env::var("SG_UPSTREAM__API_KEY").unwrap_or_else(|_| state.config.upstream.api_key.clone());
     let auth_header = format!("Bearer {}", api_key);
     tracing::info!("Sending request to {} with Auth: {}", upstream_url, auth_header);
 
@@ -112,7 +112,7 @@ pub async fn chat_completions_handler(
         .json(&proxy_payload)
         .send()
         .await
-        .map_err(|e| ControlPlaneError::UpstreamProviderError {
+        .map_err(|e| SentinelGateError::UpstreamProviderError {
             status: 502,
             message: format!("Upstream connection failed: {}", e),
         })?;
@@ -120,7 +120,7 @@ pub async fn chat_completions_handler(
     let status = response.status();
     if !status.is_success() {
         let err_text = response.text().await.unwrap_or_default();
-        return Err(ControlPlaneError::UpstreamProviderError {
+        return Err(SentinelGateError::UpstreamProviderError {
             status: status.as_u16(),
             message: err_text,
         });
@@ -142,7 +142,7 @@ pub async fn chat_completions_handler(
         Ok(Sse::new(sse_stream).into_response())
     } else {
         let response_body: serde_json::Value = response.json().await.map_err(|e| {
-            ControlPlaneError::InternalError(format!("Failed to parse upstream response: {}", e))
+            SentinelGateError::InternalError(format!("Failed to parse upstream response: {}", e))
         })?;
 
         // Log completed event to ClickHouse
@@ -169,18 +169,18 @@ pub async fn chat_completions_handler(
 pub async fn health_check_handler() -> Json<serde_json::Value> {
     Json(serde_json::json!({
         "status": "healthy",
-        "service": "ControlPlane.ai Gateway",
+        "service": "SentinelGate Gateway",
         "version": env!("CARGO_PKG_VERSION")
     }))
 }
 
 /// Prometheus Metrics Endpoint for Latency & Sever Rate Telemetry.
 pub async fn prometheus_metrics_handler() -> String {
-    "# HELP controlplane_preflight_latency_ms Sub-5ms Preflight latency breakdown\n\
-     # TYPE controlplane_preflight_latency_ms histogram\n\
-     controlplane_preflight_latency_ms_bucket{le=\"1.0\"} 142\n\
-     controlplane_preflight_latency_ms_bucket{le=\"5.0\"} 890\n\
-     # HELP controlplane_blocked_requests_total Count of security policy blocks\n\
-     # TYPE controlplane_blocked_requests_total counter\n\
-     controlplane_blocked_requests_total 12\n".to_string()
+    "# HELP sentinelgate_preflight_latency_ms Sub-5ms Preflight latency breakdown\n\
+     # TYPE sentinelgate_preflight_latency_ms histogram\n\
+     sentinelgate_preflight_latency_ms_bucket{le=\"1.0\"} 142\n\
+     sentinelgate_preflight_latency_ms_bucket{le=\"5.0\"} 890\n\
+     # HELP sentinelgate_blocked_requests_total Count of security policy blocks\n\
+     # TYPE sentinelgate_blocked_requests_total counter\n\
+     sentinelgate_blocked_requests_total 12\n".to_string()
 }

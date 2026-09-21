@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: controlplane-gateway
-  namespace: controlplane
+  name: sentinelgate-gateway
+  namespace: sentinelgate
   labels:
-    app.kubernetes.io/name: controlplane-gateway
+    app.kubernetes.io/name: sentinelgate-gateway
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app.kubernetes.io/name: controlplane-gateway
+      app.kubernetes.io/name: sentinelgate-gateway
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: controlplane-gateway
+        app.kubernetes.io/name: sentinelgate-gateway
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9090"
@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: gateway
-          image: controlplane/gateway:latest
+          image: sentinelgate/gateway:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -30,7 +30,7 @@ spec:
               name: metrics
           envFrom:
             - configMapRef:
-                name: controlplane-config
+                name: sentinelgate-config
           resources:
             requests:
               cpu: "4000m"

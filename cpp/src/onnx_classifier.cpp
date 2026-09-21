@@ -9,10 +9,10 @@
 #include <algorithm>
 #include <cmath>
 
-namespace controlplane {
+namespace sentinelgate {
 
 ONNXClassifier::ONNXClassifier(const std::string& model_path)
-    : env_(ORT_LOGGING_LEVEL_WARNING, "ControlPlaneONNX"),
+    : env_(ORT_LOGGING_LEVEL_WARNING, "SentinelGateONNX"),
       session_options_() {
     
     // Hardware acceleration & SIMD optimization settings
@@ -100,4 +100,4 @@ PreflightResult ONNXClassifier::Classify(const int64_t* input_ids_ptr, size_t le
     return result;
 }
 
-} // namespace controlplane
+} // namespace sentinelgate

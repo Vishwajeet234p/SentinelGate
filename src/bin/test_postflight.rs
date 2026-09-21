@@ -1,9 +1,9 @@
-use controlplane_ai::engine::slm_validator::SlmValidatorEngine;
+use sentinelgate::engine::slm_validator::SlmValidatorEngine;
 use std::env;
 
 fn main() {
     println!("============================================================");
-    println!("   CONTROLPLANE.AI POST-FLIGHT VALIDATOR ISOLATION TEST");
+    println!("   SENTINELGATE POST-FLIGHT VALIDATOR ISOLATION TEST");
     println!("============================================================");
     
     // Allow overriding the model path for testing

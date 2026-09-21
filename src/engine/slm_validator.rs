@@ -3,7 +3,7 @@
 //! # Responsibilities
 //! Wraps `llama.cpp` C++ inference engine to run localized, ultra-fast 1B-3B parameter SLM models on streamed tokens.
 
-use crate::error::{ControlPlaneError, Result};
+use crate::error::{SentinelGateError, Result};
 use std::ffi::{c_void, CString};
 use std::os::raw::c_char;
 use std::path::Path;
@@ -30,18 +30,18 @@ impl SlmValidatorEngine {
     pub fn new(model_path: &str) -> Result<Self> {
         let path = Path::new(model_path);
         if !path.exists() {
-            return Err(ControlPlaneError::InternalError(format!(
+            return Err(SentinelGateError::InternalError(format!(
                 "GGUF SLM model file not found at path: {}",
                 model_path
             )));
         }
 
         let c_path = CString::new(model_path)
-            .map_err(|e| ControlPlaneError::InternalError(e.to_string()))?;
+            .map_err(|e| SentinelGateError::InternalError(e.to_string()))?;
 
         let handle = unsafe { create_llama_validator(c_path.as_ptr()) };
         if handle.is_null() {
-            return Err(ControlPlaneError::MlModelExecutionError(
+            return Err(SentinelGateError::MlModelExecutionError(
                 "Failed to construct native C++ LlamaValidator context pointer".to_string(),
             ));
         }

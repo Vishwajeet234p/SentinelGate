@@ -1,4 +1,4 @@
-# ControlPlane.ai: High-Throughput Bidirectional AI Proxy & Governance Gateway
+# SentinelGate: High-Throughput Bidirectional AI Proxy & Governance Gateway
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Rust](https://img.shields.io/badge/Rust-1.75%2B-orange.svg)](https://www.rust-lang.org/)
@@ -6,23 +6,24 @@
 [![ONNX Runtime](https://img.shields.io/badge/ONNX_Runtime-1.17.1-green.svg)](https://onnxruntime.ai/)
 [![ClickHouse](https://img.shields.io/badge/ClickHouse-23.8-yellow.svg)](https://clickhouse.com/)
 
-`ControlPlane.ai` is an enterprise-grade, low-latency AI Proxy Firewall and Governance Gateway designed to sit directly between client applications and Large Language Models (LLMs). Built on a **Rust + C++ hybrid architecture**, `ControlPlane.ai` enforces zero-trust security guardrails, prompt injection defense, PII masking, semantic intent routing, and real-time output stream severing with **sub-5ms pre-flight overhead**.
+`SentinelGate` is an enterprise-grade, low-latency AI Proxy Firewall and Governance Gateway designed to sit directly between client applications and Large Language Models (LLMs). Built on a **Rust + C++ hybrid architecture**, `SentinelGate` enforces zero-trust security guardrails, prompt injection defense, PII masking, semantic intent routing, and real-time output stream severing with **sub-5ms pre-flight overhead**.
 
 ---
 
 ## 🏆 Security Pipeline Efficacy & Benchmarks
-ControlPlane.ai has been heavily stress-tested using four specialized asynchronous evaluation suites.
 
-| Evaluation Suite | Traffic Workload | Accuracy | Precision | Recall | F1 Score | Throughput | Latency (P50) | Latency (P95) |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Baseline Latency** | Sequential (1 Thread) | 94.0% | 1.00 | 0.87 | 0.93 | 0.79 RPS | **263.1 ms** | 2,114 ms |
-| **Peak Throughput** | Extreme (150 Threads) | 69.5% | 1.00 | 0.42 | 0.59 | **36.09 RPS** | 4,206 ms | 5,992 ms |
-| **Balanced Accuracy** | 50/50 Distribution | **69.6%** | **1.00** | 0.40 | 0.57 | 34.61 RPS | 1,333 ms | 2,206 ms |
-| **Skewed F1 (Real-world)**| 96% Benign / 4% Malicious | **97.4%** | **1.00** | 0.38 | **0.55** | **62.14 RPS** | 790 ms | 984 ms |
+SentinelGate has been heavily stress-tested using four specialized asynchronous evaluation suites.
 
-* **Zero-Tolerance Precision:** `1.00` precision across all test conditions, guaranteeing exactly zero false positives for legitimate enterprise traffic.
-* **Pre-Flight Overhead:** `< 3.2ms` (p95) execution speed on AVX-512 enabled hardware via zero-copy C++ FFI bindings.
-* **Concurrency Scaling:** Proven stability at `150+` concurrent worker threads utilizing lock-free Tokio task isolation.
+| Evaluation Suite           | Traffic Workload          | Accuracy  | Precision | Recall | F1 Score |  Throughput   | Latency (P50) | Latency (P95) |
+| :------------------------- | :------------------------ | :-------: | :-------: | :----: | :------: | :-----------: | :-----------: | :-----------: |
+| **Baseline Latency**       | Sequential (1 Thread)     |   94.0%   |   1.00    |  0.87  |   0.93   |   0.79 RPS    | **263.1 ms**  |   2,114 ms    |
+| **Peak Throughput**        | Extreme (150 Threads)     |   69.5%   |   1.00    |  0.42  |   0.59   | **36.09 RPS** |   4,206 ms    |   5,992 ms    |
+| **Balanced Accuracy**      | 50/50 Distribution        | **69.6%** | **1.00**  |  0.40  |   0.57   |   34.61 RPS   |   1,333 ms    |   2,206 ms    |
+| **Skewed F1 (Real-world)** | 96% Benign / 4% Malicious | **97.4%** | **1.00**  |  0.38  | **0.55** | **62.14 RPS** |    790 ms     |    984 ms     |
+
+- **Zero-Tolerance Precision:** `1.00` precision across all test conditions, guaranteeing exactly zero false positives for legitimate enterprise traffic.
+- **Pre-Flight Overhead:** `< 3.2ms` (p95) execution speed on AVX-512 enabled hardware via zero-copy C++ FFI bindings.
+- **Concurrency Scaling:** Proven stability at `150+` concurrent worker threads utilizing lock-free Tokio task isolation.
 
 ---
 
@@ -101,14 +102,14 @@ ControlPlane.ai has been heavily stress-tested using four specialized asynchrono
 
 ## 💻 Tech Stack Breakdown
 
-| Layer | Component | Technology / Library | Purpose |
-| :--- | :--- | :--- | :--- |
-| **Network Core** | Web Gateway | Rust, Axum, Tokio, Tower | High-throughput non-blocking HTTP proxy & SSE streaming |
-| **ML Engine** | FFI & Classifier | Rust `ort` crate, C++ ONNX Runtime C++ API | Sub-5ms zero-copy pre-flight prompt security classification |
-| **SLM Validation**| Shadow Validator | C++ (`llama.cpp`), GBNF Grammars | Real-time GGUF token evaluation & mid-stream circuit breaking |
-| **MLOps** | Model Fine-Tuning | PyTorch, Hugging Face Transformers, QLoRA | DeBERTa-v3 injection detection & SLM validator fine-tuning |
-| **Telemetry** | Audit Database | ClickHouse, Rust `clickhouse` driver | Columnar storage for sub-millisecond analytical logging |
-| **Infrastructure**| Packaging & K8s | Docker Multi-stage, Kubernetes, CMake | Reproducible release builds with AVX-512 & CUDA bindings |
+| Layer              | Component         | Technology / Library                       | Purpose                                                       |
+| :----------------- | :---------------- | :----------------------------------------- | :------------------------------------------------------------ |
+| **Network Core**   | Web Gateway       | Rust, Axum, Tokio, Tower                   | High-throughput non-blocking HTTP proxy & SSE streaming       |
+| **ML Engine**      | FFI & Classifier  | Rust `ort` crate, C++ ONNX Runtime C++ API | Sub-5ms zero-copy pre-flight prompt security classification   |
+| **SLM Validation** | Shadow Validator  | C++ (`llama.cpp`), GBNF Grammars           | Real-time GGUF token evaluation & mid-stream circuit breaking |
+| **MLOps**          | Model Fine-Tuning | PyTorch, Hugging Face Transformers, QLoRA  | DeBERTa-v3 injection detection & SLM validator fine-tuning    |
+| **Telemetry**      | Audit Database    | ClickHouse, Rust `clickhouse` driver       | Columnar storage for sub-millisecond analytical logging       |
+| **Infrastructure** | Packaging & K8s   | Docker Multi-stage, Kubernetes, CMake      | Reproducible release builds with AVX-512 & CUDA bindings      |
 
 ---
 
@@ -124,47 +125,57 @@ ControlPlane.ai has been heavily stress-tested using four specialized asynchrono
 
 ---
 
-
-
 ## 🚀 Local Setup & Installation Guide
 
-Follow these steps to set up the ControlPlane.ai Gateway on your local machine:
+Follow these steps to set up the SentinelGate Gateway on your local machine:
 
 ### 1. Clone the Repository
+
 ```bash
-git clone https://github.com/controlplane-ai/controlplane.git
-cd controlplane
+git clone https://github.com/pal-vaghasiya/AIC2026.git sentinelgate
+cd sentinelgate
 ```
 
 ### 2. Configure Environment Variables
+
 Because sensitive keys are never committed to version control, you must create your own `.env` file from the provided template:
+
 ```bash
 cp .env.example .env
 ```
+
 Open the `.env` file and insert your active **Gemini API Key**:
+
 ```env
-CP_UPSTREAM__API_KEY=your_actual_api_key_here
+SG_UPSTREAM__API_KEY=your_actual_api_key_here
 ```
 
 ### 3. Download the ML Models
+
 The machine learning models exceed GitHub's file size limits and are ignored by version control. You must download them manually into the `models/` directory before building the container:
+
 ```bash
 mkdir -p models
 # Download the ONNX Pre-Flight Classifier (DeBERTa-v3)
-wget -O models/deberta_injection.onnx https://huggingface.co/controlplane/deberta_injection.onnx
+wget -O models/deberta_injection.onnx https://huggingface.co/sentinelgate/deberta_injection.onnx
 # Download the GGUF Post-Flight SLM Validator (Llama)
-wget -O models/llama_validator.gguf https://huggingface.co/controlplane/llama_validator.gguf
+wget -O models/llama_validator.gguf https://huggingface.co/sentinelgate/llama_validator.gguf
 ```
-*(Note: Replace the URLs above with the actual storage endpoints if hosted privately).*
+
+_(Note: Replace the URLs above with the actual storage endpoints if hosted privately)._
 
 ### 4. Build and Run the Proxy
+
 With the `.env` file and models in place, use Docker Compose to compile the Rust/C++ hybrid proxy and start the ClickHouse telemetry database:
+
 ```bash
 docker-compose up --build -d
 ```
 
 ### 5. Run the Integration Stress Test
+
 You can verify that both the Pre-Flight ONNX filter and Post-Flight SLM validator are working simultaneously by running the Python evaluation suite:
+
 ```bash
 # Install the required python packages if you haven't already
 pip install requests sseclient-py
@@ -172,6 +183,7 @@ pip install requests sseclient-py
 # Run the live stress test
 python3 eval_suite.py
 ```
+
 This will blast the local gateway with 1,000 asynchronous concurrent requests and output a detailed security metric report!
 
 ---
@@ -179,23 +191,25 @@ This will blast the local gateway with 1,000 asynchronous concurrent requests an
 ### Option 2: Production Kubernetes Deployment
 
 1. **Build & Push Multi-Stage Container Image:**
+
    ```bash
-   docker build -t controlplane/gateway:v0.1.0 .
-   docker push controlplane/gateway:v0.1.0
+   docker build -t sentinelgate/gateway:v0.1.0 .
+   docker push sentinelgate/gateway:v0.1.0
    ```
 
 2. **Deploy ClickHouse Cluster & Gateway Manifests:**
+
    ```bash
-   kubectl create namespace controlplane
-   kubectl apply -f k8s/configmap.yaml -n controlplane
-   kubectl apply -f k8s/service.yaml -n controlplane
-   kubectl apply -f k8s/deployment.yaml -n controlplane
+   kubectl create namespace sentinelgate
+   kubectl apply -f k8s/configmap.yaml -n sentinelgate
+   kubectl apply -f k8s/service.yaml -n sentinelgate
+   kubectl apply -f k8s/deployment.yaml -n sentinelgate
    ```
 
 3. **Verify Deployment & Prometheus Scraping:**
    ```bash
-   kubectl get pods -n controlplane -l app.kubernetes.io/name=controlplane-gateway
-   kubectl logs -n controlplane -l app.kubernetes.io/name=controlplane-gateway -f
+   kubectl get pods -n sentinelgate -l app.kubernetes.io/name=sentinelgate-gateway
+   kubectl logs -n sentinelgate -l app.kubernetes.io/name=sentinelgate-gateway -f
    ```
 
 ---
@@ -215,4 +229,4 @@ Based on the 1000-request live integration stress test running with 50 concurren
 
 ## 📄 License
 
-Apache License 2.0. Copyright © 2026 ControlPlane.ai Team.
+Apache License 2.0. Copyright (c) 2026 SentinelGate Team.

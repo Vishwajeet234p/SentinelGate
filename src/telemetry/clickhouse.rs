@@ -4,7 +4,7 @@
 //! Buffers audit records (`AuditLogEntry`) in an in-memory lock-free channel (`tokio::sync::mpsc`)
 //! and periodically flushes batches to ClickHouse via HTTP interface.
 
-use crate::error::{ControlPlaneError, Result};
+use crate::error::{SentinelGateError, Result};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use tokio::sync::mpsc;

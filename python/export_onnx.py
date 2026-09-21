@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PyTorch to ONNX Exporter & Graph Optimizer for ControlPlane.ai Pre-Flight Engine.
+PyTorch to ONNX Exporter & Graph Optimizer for SentinelGate Pre-Flight Engine.
 """
 
 import argparse

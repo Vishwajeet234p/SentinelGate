@@ -15,7 +15,7 @@
 #include <string>
 #include <memory>
 
-namespace controlplane {
+namespace sentinelgate {
 
 class LlamaValidator {
 public:
@@ -34,4 +34,4 @@ private:
     void* llama_ctx_; // Opaque handle to llama_context struct
 };
 
-} // namespace controlplane
+} // namespace sentinelgate

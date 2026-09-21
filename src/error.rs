@@ -1,7 +1,7 @@
 //! Unified Centralized Error Handling Module
 //!
 //! # Responsibilities
-//! Defines `ControlPlaneError` enum wrapping network, security policy, FFI tensor execution, upstream API,
+//! Defines `SentinelGateError` enum wrapping network, security policy, FFI tensor execution, upstream API,
 //! and ClickHouse telemetry error conditions.
 //!
 //! # HTTP Mapping & Safety
@@ -16,10 +16,10 @@ use axum::{
 use serde_json::json;
 use thiserror::Error;
 
-pub type Result<T> = std::result::Result<T, ControlPlaneError>;
+pub type Result<T> = std::result::Result<T, SentinelGateError>;
 
 #[derive(Error, Debug)]
-pub enum ControlPlaneError {
+pub enum SentinelGateError {
     #[error("Pre-flight Security Violation Blocked: {reason} (Confidence Score: {score:.4})")]
     SecurityPolicyViolation { reason: String, score: f32 },
 
@@ -45,30 +45,30 @@ pub enum ControlPlaneError {
     InternalError(String),
 }
 
-impl IntoResponse for ControlPlaneError {
+impl IntoResponse for SentinelGateError {
     fn into_response(self) -> Response {
         let (status, error_code, user_message) = match &self {
-            ControlPlaneError::SecurityPolicyViolation { reason, score } => (
+            SentinelGateError::SecurityPolicyViolation { reason, score } => (
                 StatusCode::FORBIDDEN,
                 "SECURITY_POLICY_VIOLATION",
-                format!("Request blocked by ControlPlane.ai Firewall: {reason} (risk: {score:.2})"),
+                format!("Request blocked by SentinelGate Firewall: {reason} (risk: {score:.2})"),
             ),
-            ControlPlaneError::MlModelExecutionError(msg) => (
+            SentinelGateError::MlModelExecutionError(msg) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "ML_ENGINE_ERROR",
                 msg.clone(),
             ),
-            ControlPlaneError::UpstreamProviderError { status, message } => (
+            SentinelGateError::UpstreamProviderError { status, message } => (
                 StatusCode::from_u16(*status).unwrap_or(StatusCode::BAD_GATEWAY),
                 "UPSTREAM_PROVIDER_ERROR",
                 message.clone(),
             ),
-            ControlPlaneError::CircuitBreakerSevered(reason) => (
+            SentinelGateError::CircuitBreakerSevered(reason) => (
                 StatusCode::OK, // Streams sever mid-way via SSE events
                 "STREAM_CIRCUIT_BREAKER_SEVERED",
                 reason.clone(),
             ),
-            ControlPlaneError::InternalError(msg) => (
+            SentinelGateError::InternalError(msg) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "GATEWAY_INTERNAL_ERROR",
                 msg.clone(),
@@ -83,7 +83,7 @@ impl IntoResponse for ControlPlaneError {
         let body = Json(json!({
             "error": {
                 "message": user_message,
-                "type": "controlplane_security_error",
+                "type": "sentinelgate_security_error",
                 "code": error_code,
             }
         }));

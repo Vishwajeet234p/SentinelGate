@@ -1,5 +1,5 @@
 # ========================================================
-# ControlPlane.ai Gateway - Git Ignore Rules
+# SentinelGate Gateway - Git Ignore Rules
 # ========================================================
 
 # 1. Critical Secrets & Environment (DO NOT PUSH)

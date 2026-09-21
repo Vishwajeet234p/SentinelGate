@@ -18,7 +18,7 @@
 #include <memory>
 #include <onnxruntime_cxx_api.h>
 
-namespace controlplane {
+namespace sentinelgate {
 
 struct PreflightResult {
     bool is_injection;
@@ -47,4 +47,4 @@ private:
     std::vector<const char*> output_node_names_;
 };
 
-} // namespace controlplane
+} // namespace sentinelgate

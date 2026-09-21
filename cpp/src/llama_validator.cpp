@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <dlfcn.h>
 
-namespace controlplane {
+namespace sentinelgate {
 
 // Function pointers for dynamically loaded llama.cpp symbols
 typedef void* (*llama_backend_init_t)(bool);
@@ -117,4 +117,4 @@ bool LlamaValidator::ValidateChunk(const char* chunk_ptr, size_t length) {
     return true;
 }
 
-} // namespace controlplane
+} // namespace sentinelgate

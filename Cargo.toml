@@ -1,8 +1,8 @@
 [package]
-name = "controlplane-ai"
+name = "sentinelgate"
 version = "0.1.0"
 edition = "2021"
-authors = ["ControlPlane.ai Team <engineering@controlplane.ai>"]
+authors = ["SentinelGate Team <engineering@sentinelgate.ai>"]
 description = "High-Throughput Bidirectional AI Proxy & Governance Gateway in Rust and C++"
 readme = "README.md"
 
